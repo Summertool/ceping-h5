@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>学习能力测评</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Noto Sans SC,sans-serif;background:#faf5f0;color:#4a3728;line-height:1.6}
+.header{
+  background:linear-gradient(135deg,#f9a8b8,#f472b6);
+  color:#fff;padding:36px 20px 28px;text-align:center;
+  border-radius:0 0 28px 28px;position:relative;overflow:hidden
+}
+.header::before{
+  content:"";position:absolute;top:-40px;right:-30px;width:120px;height:120px;
+  background:rgba(255,255,255,0.12);border-radius:50%
+}
+.header::after{
+  content:"";position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;
+  background:rgba(255,255,255,0.08);border-radius:50%
+}
+.header h1{font-size:22px;font-weight:700;letter-spacing:1px;position:relative;z-index:1}
+.header p{font-size:14px;opacity:.85;margin-top:6px;position:relative;z-index:1}
+.container{max-width:480px;margin:0 auto;padding:14px}
+.step{display:none}
+.step.active{display:block}
+.tt{
+  font-size:17px;font-weight:700;margin:16px 0 12px;
+  color:#4a3728;letter-spacing:0.5px
+}
+.card{
+  background:#fff;border:1.5px solid #f0e6dc;border-radius:14px;
+  padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;
+  gap:12px;cursor:pointer;transition:all 0.15s;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04)
+}
+.card:active{transform:scale(0.98)}
+.card.sel{border-color:#f472b6;background:#fdf2f8;box-shadow:0 2px 8px rgba(244,114,182,0.12)}
+.cb{
+  width:22px;height:22px;border:2px solid #d4c5b8;border-radius:6px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;transition:all 0.15s
+}
+.card.sel .cb{background:#f472b6;border-color:#f472b6;color:#fff}
+.card span{font-size:15px}
+.bt{
+  display:block;width:100%;padding:15px;border:none;border-radius:14px;
+  font-size:16px;font-weight:600;cursor:pointer;text-align:center;
+  transition:all 0.15s;margin-top:14px;letter-spacing:1px
+}
+.bt-pri{background:linear-gradient(135deg,#f9a8b8,#f472b6);color:#fff;box-shadow:0 4px 12px rgba(244,114,182,0.25)}
+.bt-pri:active{transform:scale(0.97)}
+.bt-pri.dis{opacity:.3;cursor:default;box-shadow:none}
+.bt-bk{background:#fff;color:#f472b6;border:1.5px solid #f9a8b8}
+.bt-bk:active{background:#fdf2f8}
+.sb{
+  background:#fff;border-radius:16px;padding:16px 18px;margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04)
+}
+.sb h3{font-size:16px;font-weight:700;margin-bottom:8px;color:#4a3728}
+.sl{font-size:14px;color:#6b5a4a;line-height:1.8}
+.ft{text-align:center;padding:20px;font-size:12px;color:#c4b5a5}
+.tip{background:#fff7ed;border-radius:12px;padding:12px 14px;margin-top:10px;font-size:13px;color:#c2410c}
+ol{padding-left:22px;line-height:2.2;font-size:14px;color:#4a3728}
+ol li strong{color:#4a3728}
+ol li span{color:#8b7a6a}
+</style>
+</head>
+<body>
+<div class="header"><h1>学习能力测评</h1><p>2分钟了解孩子的学习状况</p></div>
+<div class="container">
+<div class="step active" id="s1"><div class="tt">请勾选孩子的日常行为表现（可多选）</div><div id="list"></div><div class="bt bt-pri dis" id="nb" onclick="go2()">下一步</div></div>
+<div class="step" id="s2"><div class="tt">可能会在以下方面体现：</div><div id="res"></div><div class="bt bt-pri" onclick="go3()">查看训练建议</div><div class="bt bt-bk" onclick="go1()">返回修改</div></div>
+<div class="step" id="s3"><div class="tt">训练建议</div><div id="rp"></div><div class="bt bt-bk" onclick="go1()">重新测评</div></div>
+<div class="ft">基于儿童学习能力发展理论</div>
+</div>
+<script>
+var LI=["马虎/粗心","应用题容易出问题","阅读跳字/掉字/串行","不爱看书","英语单词记不住","写字丑/写字累/不爱写","握笔姿势不对","听课走神","英语听说困难","说了不听/当耳旁风","计算总是错","不愿意做口算","作文写不出","说话颠三倒四","数学理解慢","不会举一反三","几何容易出问题","方向感差/记不住路","怎么教都不会","背课文/背单词困难","做作业东摸西摸","坐不住/好动","做事拖拖拉拉","佛系/没目标/没动力","输不起/爱哭/爱发火","怕困难/不敢尝试","做没做完就换别的","孩子专注力不好","很聪明但成绩不稳定","不写作业","对环境要求高/嫌学校脏","人际关系一般(和同学不太和睦)","情绪敏感/容易哭","情绪稳定/不轻易哭"];
+var SE={};
+var LD={goal:{m:["不愿动脑"],c:["作文凑字数"],e:["不愿背单词"],b:["佛系没目标","推动困难","做事没条理","得过且过"]},executive:{m:[],c:[],e:[],b:["人际关系一般","做事虎头蛇尾","很难执行到底"]},emotion:{m:[],c:[],e:[],b:["情绪敏感容易哭","学得快忘得快","不喜欢重复刷题"]},logic:{m:["应用题容易出问题","数理化跟不上","公式推导困难"],c:["阅读理解抓不住重点","缩句差","文章没条理"],e:["语法结构理解弱"],b:["不讲道理","情绪不稳定"]},numeric:{m:["计算总出错","口算速度慢"],c:[],e:[],b:["对数字不敏感"]},spatial:{m:["几何容易出问题","单位换算易出错","应用题代入困难"],c:["文章淡如水","没有形容词","文科记忆靠死记硬背"],e:["单词只能死记硬背"],b:["解题思路单一","不会举一反三"]},visual:{m:["运算符号容易看错","读题过快，容易忽视题目中的陷阱","竖式对不齐","进退位易出错"],c:["阅读串行掉字掉段","阅读理解比较弱","作文无环境景物描写","文科记忆困难"],e:["单词记不住拼写错误多"],b:["抄写看一个写一个","抄写错误多","脸盲症"]},auditory:{m:[],c:["语言表达能力弱","作文字数上不去","情感描写少","背诵困难"],e:["英语听力差","口语发音不准"],b:["上课听讲效率低","沟通困难"]}};
+var MP={"马虎/粗心":"visual","应用题容易出问题":"visual,logic","阅读跳字/掉字/串行":"visual","不爱看书":"visual,spatial","英语单词记不住":"visual,auditory","写字丑/写字累/不爱写":"bodily","握笔姿势不对":"bodily","听课走神":"auditory","英语听说困难":"auditory,visual,spatial","说了不听/当耳旁风":"auditory","计算总是错":"numeric,visual","不愿意做口算":"numeric,bodily","作文写不出":"logic,spatial,auditory,visual","说话颠三倒四":"logic,auditory","数学理解慢":"logic,numeric","不会举一反三":"spatial","几何容易出问题":"spatial","方向感差/记不住路":"spatial","怎么教都不会":"logic,auditory","背课文/背单词困难":"memory","做作业东摸西摸":"executive","坐不住/好动":"bodily","做事拖拖拉拉":"goal,executive","佛系/没目标/没动力":"goal","输不起/爱哭/爱发火":"emotion","怕困难/不敢尝试":"emotion,goal","做没做完就换别的":"executive","孩子专注力不好":"bodily","很聪明但成绩不稳定":"emotion","不写作业":"bodily","对环境要求高/嫌学校脏":"visual","人际关系一般(和同学不太和睦)":"executive","情绪敏感/容易哭":"emotion","情绪稳定/不轻易哭":"emotion"};
+function rd(){var h="";for(var i=0;i<LI.length;i++){var s=SE[i]?" sel":"";h+="<div class=\"card"+s+"\" onclick=\"tg("+i+")\"><div class=\"cb\">"+(SE[i]?"✓":"")+"</div><span>"+LI[i]+"</span></div>";}document.getElementById("list").innerHTML=h;var nb=document.getElementById("nb");var ct=0;for(var k in SE)ct++;nb.className="bt bt-pri"+(ct===0?" dis":"");}
+function tg(i){if(SE[i])delete SE[i];else SE[i]=1;rd()}
+function go1(){document.getElementById("s1").className="step active";document.getElementById("s2").className="step";document.getElementById("s3").className="step";window.scrollTo(0,0);}
+function go2(){var ct=0;for(var k in SE)ct++;if(ct===0)return;var ds={};for(var idx in SE){var ks=MP[LI[idx]];if(ks){var a=ks.split(",");for(var i=0;i<a.length;i++)ds[a[i]]=1;}}var bh=[],sm=[],sc=[],se=[];var vm={},vc={},ve={},vb={};for(var k in ds){var d=LD[k];if(!d)continue;if(k==="goal"||k==="executive"||k==="emotion"){for(var g=0;g<d.b.length;g++){if(!vb[d.b[g]]){vb[d.b[g]]=1;bh.push(d.b[g]);}}}else{for(var m=0;m<d.m.length;m++){if(!vm[d.m[m]]){vm[d.m[m]]=1;sm.push(d.m[m]);}}for(var c=0;c<d.c.length;c++){if(!vc[d.c[c]]){vc[d.c[c]]=1;sc.push(d.c[c]);}}for(var e=0;e<d.e.length;e++){if(!ve[d.e[e]]){ve[d.e[e]]=1;se.push(d.e[e]);}}}}var h="";if(bh.length>0){h+="<div class=\"sb\"><h3>行为问题</h3><div class=\"sl\">"+bh.join("、")+"</div></div>";}h+="<div class=\"sb\"><h3>📐 数学方面</h3><div class=\"sl\">"+(sm.length>0?sm.join("、"):"<span style=color:#bbb>无明显影响</span>")+"</div></div>";h+="<div class=\"sb\"><h3>📖 语文方面</h3><div class=\"sl\">"+(sc.length>0?sc.join("、"):"<span style=color:#bbb>无明显影响</span>")+"</div></div>";h+="<div class=\"sb\"><h3>🌍 英语方面</h3><div class=\"sl\">"+(se.length>0?se.join("、"):"<span style=color:#bbb>无明显影响</span>")+"</div></div>";document.getElementById("res").innerHTML=h;document.getElementById("s1").className="step";document.getElementById("s2").className="step active";document.getElementById("s3").className="step";window.scrollTo(0,0);}
+var TR=[{i:"logic",n:"首先增强逻辑思维能力",t:"因果分析、排序、分类、类比训练。逻辑是大脑的理智控制器"},{i:"bodily",n:"大幅提升运动能力",t:"篮球、跳绳、体能训练。保证大脑神经的正常发育"},{i:"visual",n:"提升视觉能力",t:"舒尔特方格、追视训练、找不同。加强信息输入的能力和准确性"},{i:"numeric",n:"提升数字敏感度",t:"20以内加减法微刺激、口算速度。减少计算出错"},{i:"spatial",n:"完善空间能力",t:"积木拼图、方向辨别、脑内成像。增加想象力"},{i:"auditory",n:"提高听觉能力的准确性",t:"节奏训练、指令执行、听记训练。保证听说能力在线"}];
+function go3(){var dc={};for(var idx in SE){var ks=MP[LI[idx]];if(ks){var a=ks.split(",");for(var i=0;i<a.length;i++){if(!dc[a[i]])dc[a[i]]=0;dc[a[i]]++;}}}var h="<div class=\"sb\"><h3>📋 训练建议（按优先级）</h3><ol style=\"padding-left:18px;line-height:2\">";if(!dc["logic"]){h+="<li><strong>逻辑恢复性训练（基础）</strong><br><span style=font-size:13px;color:#888>因果分析、排序、分类、类比。逻辑是大脑的理智控制器。</span></li>";}for(var i=0;i<TR.length;i++){if(dc[TR[i].i]){h+="<li><strong>"+TR[i].n+"</strong><br><span style=font-size:13px;color:#888>"+TR[i].t+"</span></li>";}}h+="</ol>";if(dc["emotion"]){h+="<div class=\"tip\">孩子情绪较敏感，训练时以鼓励为主。</div>";}h+="</div>";h+="<div class=\"sb\"><h3>📌 训练的根本意义</h3><div class=\"sl\">任何学习问题和行为问题，都出自于大脑发育过程中的综合性展示。孩子不是笨也不是懒，而是大脑某些功能还在发育中。训练不是补习知识，而是促进相关部位的神经突触重新链接和增长。只有当大脑发育追赶上来，学习能力和行为问题才能从根本上解决。这是一个长期的过程，需要耐心和坚持。</div></div>";h+="<div class=\"sb\"><h3>⏰ 每日建议</h3><div class=\"sl\">运动：篮球（4岁~四年级）或跳绳（2000-3000个），45分钟以上。专项训练每项不超10分钟，总时长不超30分钟。只有长期的坚持训练，才能从根本上解决孩子遇到的学习问题。</div></div>";document.getElementById("rp").innerHTML=h;document.getElementById("s1").className="step";document.getElementById("s2").className="step";document.getElementById("s3").className="step active";window.scrollTo(0,0);}
+rd();
+</script>
+</body>
+</html>
